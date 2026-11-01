@@ -194,7 +194,11 @@ export const useSettingsStore = defineStore('settings', () => {
   function checkApiConfigured(cfg: ApiConfig): boolean {
     if (cfg.apiMode === 'backend' || cfg.apiMode === 'legacy') return true
     if (cfg.apiMode === 'custom') {
-      const isGemini = cfg.apiProtocol === 'gemini' || (!cfg.baseUrl && cfg.model?.toLowerCase().includes('gemini'))
+      const isGemini =
+        cfg.apiProtocol === 'gemini' ||
+        (!cfg.baseUrl &&
+          (cfg.model?.toLowerCase().includes('gemini') ||
+            /^(AIzaSy|AQ)/.test((cfg.apiKey || '').trim())))
       if (isGemini) {
         return !!cfg.apiKey && !!cfg.model
       }

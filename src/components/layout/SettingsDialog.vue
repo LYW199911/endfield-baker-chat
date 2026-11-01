@@ -1221,7 +1221,7 @@ function resetAll() {
                   v-model="apiDraft.apiKey"
                   class="sd__input"
                   type="password"
-                  placeholder="sk-..."
+                  :placeholder="apiDraft.apiProtocol === 'gemini' ? 'AIzaSy... 或 AQ... (Google API Key)' : 'sk-...'"
                 />
               </label>
               <label class="sd__field">
@@ -1760,7 +1760,7 @@ function resetAll() {
                     v-model="summaryDraft.apiKey"
                     class="sd__input"
                     type="password"
-                    placeholder="sk-..."
+                    placeholder="sk-... / AIzaSy... / AQ..."
                     autocomplete="off"
                   />
                 </label>

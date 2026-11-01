@@ -77,16 +77,30 @@ function normalizeGeminiModel(rawModel?: string): string {
 }
 
 /**
+ * 校验是否为合法的 Google Gemini API Key 格式 (同时兼容传统 AIzaSy 与新版 AQ 开头，放宽长度)
+ */
+export function isGeminiApiKey(key?: string): boolean {
+  const trimmed = (key || '').trim()
+  return /^(AIzaSy|AQ)[A-Za-z0-9_-]{20,}$/.test(trimmed)
+}
+
+/**
  * 判断是否应采用 Gemini 原生协议
  */
 export function isGeminiProtocol(config: ApiConfig): boolean {
+  // 1. 优先以用户显式选择的 Provider / Protocol 字段为准
   if (config.apiProtocol === 'gemini') return true
   if (config.apiProtocol === 'openai') return false
-  // 自动探测：Base URL 包含 googleapis 或模型名带有 gemini
+
+  // 2. 自动探测：Base URL 包含 googleapis 或模型名带有 gemini
   const url = (config.baseUrl || '').toLowerCase()
   const model = (config.model || '').toLowerCase()
   if (url.includes('googleapis.com') || url.includes('generativelanguage')) return true
   if (model.startsWith('gemini') || model.includes('gemini-')) return true
+
+  // 3. API Key 特征探测：兼容传统 AIzaSy 与新版 AQ 开头，明确归入 Gemini 协议
+  if (isGeminiApiKey(config.apiKey)) return true
+
   return false
 }
 
